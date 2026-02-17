@@ -31,10 +31,6 @@ app.use("/api/public", publicRoutes);
 app.use("/api/posts", require("./src/routes/posts"));
 app.use("/uploads", express.static("uploads"));
 app.use("/api/documents", documentRoutes);
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "../uploads"))
-);
 app.use("/api/contacts", contactsRoutes);
 app.use("/uploads/executives", express.static("uploads/executives"));
 app.use("/uploads/media", express.static("uploads/media"));
