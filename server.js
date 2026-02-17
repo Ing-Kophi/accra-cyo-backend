@@ -16,8 +16,7 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "http://localhost:3000",
-    "https//accracyo.netlify.app"
+    "https://accracyo.netlify.app"
   ],
   credentials: true
 }));
