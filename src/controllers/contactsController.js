@@ -81,19 +81,41 @@ const {
   sendAutoReply
 } = require("../utils/mailer");
 
+const NAME_REGEX = /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 exports.sendContactMessage = async (req, res) => {
   try {
     const { name, email, message } = req.body;
+    const trimmedName = String(name || "").trim();
+    const trimmedEmail = String(email || "").trim();
+    const trimmedMessage = String(message || "").trim();
 
-    if (!name || !email || !message) {
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    if (!NAME_REGEX.test(trimmedName)) {
+      return res.status(400).json({
+        message: "Name can only contain letters, spaces, and hyphens"
+      });
+    }
+
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      return res.status(400).json({
+        message: "Please provide a valid email address"
+      });
+    }
+
     // 1. Send message to admin
-    await sendContactEmail({ name, email, message });
+    await sendContactEmail({
+      name: trimmedName,
+      email: trimmedEmail,
+      message: trimmedMessage
+    });
 
     // 2. Send auto-reply to sender
-    await sendAutoReply({ name, email });
+    await sendAutoReply({ name: trimmedName, email: trimmedEmail });
 
     res.json({ message: "Message sent successfully" });
   } catch (err) {
